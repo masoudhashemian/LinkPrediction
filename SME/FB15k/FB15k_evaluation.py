@@ -13,16 +13,23 @@ def convert2idx(spmat):
 
 
 def RankingEval(datapath='../data/', dataset='FB15k-test',
-        loadmodel='best_valid_model.pkl', neval='all', Nsyn=14951, n=10,
+        loadmodel='FB15k_TransE/best_valid_model.pkl', neval='all', Nsyn=14951, n=10,
         idx2synsetfile='FB15k_idx2entity.pkl'):
 
+    print "evaluation started..."
     # Load model
     f = open(loadmodel)
+    print "model loaded"
     embeddings = cPickle.load(f)
     leftop = cPickle.load(f)
     rightop = cPickle.load(f)
     simfn = cPickle.load(f)
     f.close()
+    print "cPickle loaded"
+
+    for emb in embeddings:
+        embedding, relationl, relationr = parse_embeddings(embeddings)
+        print "This is %s" % embedding.E.T.vector()
 
     # Load data
     l = load_file(datapath + dataset + '-lhs.pkl')
@@ -30,6 +37,7 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
     o = load_file(datapath + dataset + '-rel.pkl')
     if type(embeddings) is list:
         o = o[-embeddings[1].N:, :]
+
 
     # Convert sparse matrix to indexes
     if neval == 'all':
@@ -42,9 +50,9 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
         idxo = convert2idx(o)[:neval]
 
     ranklfunc = RankLeftFnIdx(simfn, embeddings, leftop, rightop,
-            subtensorspec=Nsyn)
+                              subtensorspec=Nsyn)
     rankrfunc = RankRightFnIdx(simfn, embeddings, leftop, rightop,
-            subtensorspec=Nsyn)
+                               subtensorspec=Nsyn)
 
     res = RankingScoreIdx(ranklfunc, rankrfunc, idxl, idxr, idxo)
     dres = {}
@@ -61,14 +69,14 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
 
     print "### MICRO:"
     print "\t-- left   >> mean: %s, median: %s, hits@%s: %s%%" % (
-            round(dres['microlmean'], 5), round(dres['microlmedian'], 5),
-            n, round(dres['microlhits@n'], 3))
+        round(dres['microlmean'], 5), round(dres['microlmedian'], 5),
+        n, round(dres['microlhits@n'], 3))
     print "\t-- right  >> mean: %s, median: %s, hits@%s: %s%%" % (
-            round(dres['micrormean'], 5), round(dres['micrormedian'], 5),
-            n, round(dres['microrhits@n'], 3))
+        round(dres['micrormean'], 5), round(dres['micrormedian'], 5),
+        n, round(dres['microrhits@n'], 3))
     print "\t-- global >> mean: %s, median: %s, hits@%s: %s%%" % (
-            round(dres['microgmean'], 5), round(dres['microgmedian'], 5),
-            n, round(dres['microghits@n'], 3))
+        round(dres['microgmean'], 5), round(dres['microgmedian'], 5),
+        n, round(dres['microghits@n'], 3))
 
     listrel = set(idxo)
     dictrelres = {}
@@ -126,14 +134,14 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
 
     print "### MACRO:"
     print "\t-- left   >> mean: %s, median: %s, hits@%s: %s%%" % (
-            round(dres['macrolmean'], 5), round(dres['macrolmedian'], 5),
-            n, round(dres['macrolhits@n'], 3))
+        round(dres['macrolmean'], 5), round(dres['macrolmedian'], 5),
+        n, round(dres['macrolhits@n'], 3))
     print "\t-- right  >> mean: %s, median: %s, hits@%s: %s%%" % (
-            round(dres['macrormean'], 5), round(dres['macrormedian'], 5),
-            n, round(dres['macrorhits@n'], 3))
+        round(dres['macrormean'], 5), round(dres['macrormedian'], 5),
+        n, round(dres['macrorhits@n'], 3))
     print "\t-- global >> mean: %s, median: %s, hits@%s: %s%%" % (
-            round(dres['macrogmean'], 5), round(dres['macrogmedian'], 5),
-            n, round(dres['macroghits@n'], 3))
+        round(dres['macrogmean'], 5), round(dres['macrogmedian'], 5),
+        n, round(dres['macroghits@n'], 3))
 
     return dres
 
@@ -208,4 +216,4 @@ def RankingEvalFil(datapath='../data/', dataset='umls-test', op='TransE',
     return MR, T10
 
 if __name__ == '__main__':
-    RankingEval(loadmodel=sys.argv[1])
+    RankingEval()
