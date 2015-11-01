@@ -29,7 +29,7 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
 
     for emb in embeddings:
         embedding, relationl, relationr = parse_embeddings(embeddings)
-        print "This is %s" % embedding.E.T.vector()
+        print type(embedding)
 
     # Load data
     l = load_file(datapath + dataset + '-lhs.pkl')
