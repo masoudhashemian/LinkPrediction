@@ -166,9 +166,14 @@ def tsne(X = Math.array([]), no_dims = 2, initial_dims = 50, perplexity = 30.0):
 
 def RankingEval(datapath='../data/', dataset='FB15k-test',
         loadmodel='FB15k_TransE/best_valid_model.pkl', neval='all', Nsyn=14951, n=10,
-        idx2synsetfile='FB15k_idx2entity.pkl'):
+        idx2synsetfile='FB15k_TransE/current_state.pkl'):
 
     print "evaluation started..."
+
+    f = open(idx2synsetfile)
+    orig = cPickle.load(f)
+    f.close()
+    print orig
     # Load model
     f = open(loadmodel)
     print "model loaded"
@@ -198,13 +203,14 @@ def RankingEval(datapath='../data/', dataset='FB15k-test',
 
     embedding, relationl, relationr = parse_embeddings(embeddings)
     arr = []
-    for l, o, r in zip(idxl, idxo, idxr):
+    for l in idxl:
+        print l;
         arr.append(embedding.E[:, l].reshape((1, embedding.D))[0].flatten().eval())
-        if l < 500:
+        if len(arr) > 5000:
             break
     return arr
 
 if __name__ == '__main__':
     arr = RankingEval()
     print len(arr)
-    Math.savetxt("validation_data1.txt", arr)
+    Math.savetxt("validation_data5000.txt", arr)

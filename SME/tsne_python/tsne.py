@@ -166,7 +166,7 @@ def tsne(X = Math.array([]), no_dims = 2, initial_dims = 50, perplexity = 30.0):
 if __name__ == "__main__":
     print "Run Y = tsne.tsne(X, no_dims, perplexity) to perform t-SNE on your dataset."
     print "Running example on 2,500 MNIST digits..."
-    X = Math.loadtxt("vdata.txt");
+    X = Math.loadtxt("data5000.txt");
     #labels = Math.loadtxt("labels.txt");
     text_file = open("labels_1000_50.txt", "r")
     labels = text_file.readlines()
