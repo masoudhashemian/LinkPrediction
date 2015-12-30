@@ -1687,11 +1687,11 @@ def RankingScoreIdx(sl, sr, idxl, idxr, idxo):
     """
     errl = []
     errr = []
-    for l, o, r in zip(idxl, idxo, idxr):
+    for r in idxr:
         errl += [np.argsort(np.argsort((
-            sl(r, o)[0]).flatten())[::-1]).flatten()[l] + 1]
+            sl(r, 1000)[0]).flatten())[::-1]).flatten()[10] + 1]
         errr += [np.argsort(np.argsort((
-            sr(l, o)[0]).flatten())[::-1]).flatten()[r] + 1]
+            sr(10, 1000)[0]).flatten())[::-1]).flatten()[r] + 1]
     return errl, errr
 
 
