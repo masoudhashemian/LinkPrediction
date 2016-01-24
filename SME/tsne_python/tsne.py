@@ -12,6 +12,7 @@
 
 import numpy as Math
 import pylab as Plot
+import sys
 
 def Hbeta(D = Math.array([]), beta = 1.0):
 	"""Compute the perplexity and the P-row for a specific value of the precision of a Gaussian distribution."""
@@ -107,7 +108,7 @@ def tsne(X = Math.array([]), no_dims = 2, initial_dims = 50, perplexity = 30.0):
 	# Initialize variables
 	X = pca(X, initial_dims).real;
 	(n, d) = X.shape;
-	max_iter = 200;
+	max_iter = 50;
 	initial_momentum = 0.5;
 	final_momentum = 0.8;
 	eta = 500;
@@ -166,9 +167,12 @@ def tsne(X = Math.array([]), no_dims = 2, initial_dims = 50, perplexity = 30.0):
 if __name__ == "__main__":
 	print "Run Y = tsne.tsne(X, no_dims, perplexity) to perform t-SNE on your dataset."
 	print "Running example on 2,500 MNIST digits..."
-	X = Math.loadtxt("d500.txt");
+	reload(sys);
+	sys.setdefaultencoding('utf8');
+	sys.getdefaultencoding();
+	X = Math.loadtxt("d4500.txt");
 	#labels = Math.loadtxt("labels.txt");
-	text_file = open("l500.txt", "r")
+	text_file = open("lable-4500.txt", "r")
 	labels = text_file.readlines()
 
 	Y = tsne(X, 2, 50, 20.0);
@@ -176,11 +180,12 @@ if __name__ == "__main__":
 	Plot.scatter(
 	    Y[:, 0], Y[:, 1], marker = 'o', c = Y[:, 1],
 	    cmap = Plot.get_cmap('Spectral'))
-	'''
+
+
 	for label, x, y in zip(labels, Y[:, 0], Y[:, 1]):
 	    Plot.annotate(label, xy = (x, y), xytext = (-20, 20),
 		textcoords = 'offset points', ha = 'right', va = 'bottom',
 		bbox = dict(boxstyle = 'round,pad=0.5', fc = 'yellow', alpha = 0),
 		arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
-	'''
+
 	Plot.show()
